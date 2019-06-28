@@ -8,8 +8,8 @@ Plugin 'scrooloose/nerdtree'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'winmanager'
 Plugin 'SuperTab'
-Plugin 'nerdtree-git-plugin'
-
+Plugin 'scrooloose/nerdtree-git-plugin'
+Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'taglist.vim'
 Plugin 'w0rp/ale' "语法检查
 "Plugin 'Neocomplete
@@ -43,15 +43,19 @@ if version >= 603
 endif
 " 设置配色方案
 colorscheme default
+
 "字体
-"if (has("gui_running"))
-"   set guifont=Bitstream\ Vera\ Sans\ Mono\ 10
-"endif
+if (has("gui_running"))
+   set guifont=Bitstream\ Vera\ Sans\ Mono\ 10
+endif
+
 "自动跳到上次关闭时光标所在行
 if has("autocmd")
 	au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 endif
-"新建.c,.h,.sh,.java文件，自动插入文件头
+
+
+"--------------新建.c,.h,.sh,.java文件，自动插入文件头-----------------------------
 autocmd BufNewFile *.cpp,*.[ch],*.sh,*.java exec ":call SetTitle()"
 func SetTitle()
     if &filetype == 'sh'
@@ -88,6 +92,9 @@ func SetTitle()
     endif
     autocmd BufNewFile * normal G
 endfunc
+"--------------------------------------------------------------------------------------
+
+
 nmap <leader>w :w!<cr>
 nmap <leader>f :find<cr>
 " 映射全选+复制 ctrl+a
@@ -246,7 +253,9 @@ set scrolloff=3
 set smartindent
 " 高亮显示普通txt文件（需要txt.vim脚本）
 au BufRead,BufNewFile *  setfiletype txt
-"自动补全
+
+
+"------------------------------自动补全---------------------------------------
 :inoremap ( ()<ESC>i
 :inoremap ) <c-r>=ClosePair(')')<CR>
 :inoremap { {<CR>}<ESC>O
@@ -265,7 +274,10 @@ endfunction
 filetype plugin indent on
 "打开文件类型检测, 加了这句才可以用智能补全
 set completeopt=longest,menu
-"CTags的设定
+"-----------------------------------------------------------------------------
+
+
+"-------------------------CTags settings--------------------------------------
 let Tlist_Sort_Type = "name"    " 按照名称排序
 let Tlist_Use_Right_Window = 1  " 在右侧显示窗口
 let Tlist_Compart_Format = 1    " 压缩方式
@@ -278,7 +290,11 @@ autocmd FileType java set tags+=D:\tools\java\tags
 "设置tags
 set tags=tags
 "set autochdir
-"winmanager配置
+"--------------------------------------------------------------------------------
+
+
+
+"----------------------------------winmanager配置--------------------------------
 let loaded_winmanager = 1 "1 You can avoid loading this plugin.
 let g:persistentBehaviour = 0
 let g:winManagerWidth = 30 "the width of the explorer areas,default 25.
@@ -293,8 +309,11 @@ endfunction
 function! NERDTree_IsValid()
 	return 1
 endfunction
+"---------------------------------------------------------------------------------
 
-"Taglist插件设置
+
+
+"--------------Taglis settins-----------------------------------
 let Tlist_Auto_Open=1 "默认打开taglist,使用wnindowmanager时不自动打开
 let Tlist_Ctags_Cmd = '/usr/bin/ctags'
 let Tlist_File_Fold_Auto_Close = 1 "t只显示当前文件tag，其它文件的tag都被折叠起来
@@ -305,11 +324,9 @@ let Tlist_Use_SingleClick=1 "单击跳转到指定标签位置
 let Tlist_WinWidth = 25
 "let Tlist_WinHeight = 0
 let Tlist_Ctags_Cmd = '/usr/bin/ctags'
+"------------------------------------------------------------------------------
 
-
-""""""""""""""""""""""""""""""""""""""""""""""
-""NERDTree settings
-""""""""""""""""""""""""""""""""""""""""""""""
+"------------------------------------NERDTree settings--------------------------------
 map <F3> : NERDTreeToggle<CR>
 autocmd VimEnter * NERDTree
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
@@ -333,8 +350,11 @@ let g:NERDTreeIndicatorMapCustom = {
     \ "Clean"     : "✔︎",
     \ "Unknown"   : "?"
     \ }
+"---------------------------------------------------------------------------------
 
-"nerd commenter注释脚本
+
+
+"----------------------nerdcommenter settings--------------------------------------
 let mapleader="c"
 set timeout timeoutlen=1500
 ",ca在可选的注释方式之间切换，比如C/C++ 的块注释/* */和行注释//  
@@ -349,9 +369,27 @@ set timeout timeoutlen=1500
 "2,cm:光标以下count行添加块注释(2,cm)
 "Normal模式下，几乎所有命令前面都可以指定行数
 "Visual模式下执行命令，会对选中的特定区块进行注释/反注释
-"-----------------------------------------------------------------------------
-"ale.vim settings
-"-----------------------------------------------------------------------------
+"---------------------------------------------------------------------------------
+
+
+"----------------------ctrlp settings---------------------------------------------
+let g:ctrlp_map = '<c-p>'
+let g:ctrlp_cmd = 'CtrlP'
+let g:ctrlp_working_path_mode = 'ra'
+let g:ctrlp_custom_ignore = {
+    \ 'dir':  '\v[\/]\.(git|hg|svn|rvm)$',
+    \ 'file': '\v\.(exe|so|dll|zip|tar|tar.gz|pyc)$',
+    \ }
+"set wildignore+=*/tmp/*,*.so,*.swp,*.zip
+
+"Use a custom file listing command
+"let g:ctrlp_user_command = 'find %s -type f'
+
+"Ignore files in .gitignore
+let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files -co --exclude-standard']
+"------------------------------------------------------------------------------------
+
+"---------------------ale.vim settings---------------------------------------
 "keep the sign gutter open
 let g:ale_sign_column_always = 1
 let g:ale_sign_error = 'X'
@@ -380,7 +418,10 @@ let g:ale_lint_on_text_changed = 'never'
 " dont run lint on opening a file
 let g:ale_lint_on_enter = 0
 "------------------------END ale.vim--------------------------------------
-"支持鼠标复制粘贴
+
+
+"-------------------------支持鼠标复制粘贴--------------------------------
 if has( 'mouse' )
 	set mouse=a
 endif
+"-------------------------------------------------------------------------
