@@ -42,7 +42,7 @@ if version >= 603
     set encoding=utf-8
 endif
 " 设置配色方案
-colorscheme default
+colorscheme morning
 
 "字体
 if (has("gui_running"))
@@ -64,7 +64,7 @@ func SetTitle()
         call append(line(".")+1, "*Author: WenZhiming")
         call append(line(".")+2, "*mail: iwenzhiming@163.com")
         call append(line(".")+3, "*Created Time: ".strftime("%c"))
-        call append(line(".")+4, "*Last modified: ".strftime("%c"))
+        call append(line(".")+4, "*Last Modified: ".strftime("%c"))
         call append(line(".")+5, "*Description: ")
         call append(line(".")+6, "\*************************************************************************")
         call append(line(".")+7, "\#! /bin/bash")
@@ -94,7 +94,40 @@ func SetTitle()
 endfunc
 "--------------------------------------------------------------------------------------
 
+"------------------------------自动修改Last Modified时间-------------------
+autocmd BufWritePre *.cpp,*.h,*.c,*.sh exec ":call TimeStamp('*')"
+func TimeStamp(...)  
+     let sbegin = ''  
+     let send = ''  
+     let pend = ''  
+     if a:0 >= 1  
+         let sbegin = '' . a:1  
+         let sbegin = substitute(sbegin, '*', '\\*', "g")  
+         let sbegin = sbegin . '\s*'  
+     endif  
+     if a:0 >= 2  
+         let send = '' . a:2  
+         let pend = substitute(send, '*', '\\*', "g")  
+     endif  
+     let pattern = 'Last Modified: .\+' . pend  
+     let pattern = '^\s*' . sbegin . pattern . '\s*$'  
+     "let now = strftime('%Y-%m-%d %H:%M:%S',localtime())  
+     let now = strftime("%c")  
 
+     let row = search(pattern, 'n')  
+     if row  == 0  
+         let now = a:1 . 'Last Modified:  ' . now . send  
+         call append(2, now)  
+     else  
+         let curstr = getline(row)  
+
+         let col = match( curstr , 'Last')  
+         let now = a:1 . 'Last Modified:  ' . now . send  
+         call setline(row, now)  
+     endif  
+ endfunc
+
+ "----------------------------------------------------------------------------
 nmap <leader>w :w!<cr>
 nmap <leader>f :find<cr>
 " 映射全选+复制 ctrl+a
@@ -181,13 +214,15 @@ set confirm
 " 自动缩进
 set autoindent
 set cindent
+"自动对齐
+set ai
 " Tab键的宽度
 set tabstop=4
 " 统一缩进为4
 set softtabstop=4
 set shiftwidth=4
-" 不要用空格代替制表符
-set noexpandtab
+" 用空格代替制表符
+set expandtab
 " 在行和段开始处使用制表符
 set smarttab
 " 显示行号
@@ -336,7 +371,7 @@ let g:NERDTreeDirArrowCollapsible = '▾'
 let NERDTreeShowHidden=1
 let NERDTreeWinSize=30
 "忽略以下文件
-let NERDTreeIgnore=['\.pyc','\~$','\.swp']
+let NERDTreeIgnore=['\.pyc','\~$','\.swp','\moc_','\ui_','\.o$']
 " 在终端启动vim时，共享NERDTree
 let g:nerdtree_tabs_open_on_console_startup=1
 let g:NERDTreeIndicatorMapCustom = {
