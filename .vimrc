@@ -11,6 +11,7 @@ Plugin 'SuperTab'
 Plugin 'scrooloose/nerdtree-git-plugin'
 Plugin 'ctrlpvim/ctrlp.vim'
 Plugin 'taglist.vim'
+Plugin 'a.vim'
 Plugin 'w0rp/ale' "语法检查
 "Plugin 'Neocomplete
 "Plugin 'Valloric/YouCompleteMe' "自动补全
